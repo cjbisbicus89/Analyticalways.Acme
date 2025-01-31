@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Analyticalways.Acme.Infraestructure.Data\Analyticalways.Acme.Infraestructure.Data.csproj" />
+    <ProjectReference Include="..\Analyticalways.Acme.Infraestructure.Interface\Analyticalways.Acme.Infraestructure.Interface.csproj" />
+    <ProjectReference Include="..\Analyticalways.Acme.Tranversal.Common\Analyticalways.Acme.Tranversal.Common.csproj" />
+  </ItemGroup>
+
+</Project>
