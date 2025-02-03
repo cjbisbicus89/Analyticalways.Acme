@@ -28,7 +28,7 @@ El uso de interfaces como `ISchoolRepository` y `IPaymentGateway` permite que el
 ### 5. Respuestas Genéricas
 El sistema utiliza un objeto `Response<T>` para envolver todas las respuestas de las operaciones, lo que permite devolver no solo el resultado, sino también mensajes de error o éxito de manera estructurada y consistente.
 
-## Cosas que me hubiera gustado hacer pero no hice
+## Cosas que me hubiera gustado hacer pero no hice en la prueba
 
 1. **Persistencia de Datos**: No se implementó una base de datos para almacenar la información de los estudiantes y cursos, pero sería una extensión natural del proyecto.
 2. **Interfaz de Usuario**: Aunque la solución es funcional, no tiene una interfaz gráfica ni una API. Una API RESTful sería el siguiente paso para que el sistema sea más accesible.
@@ -43,6 +43,7 @@ El sistema utiliza un objeto `Response<T>` para envolver todas las respuestas de
 
 1. **xUnit.net**: Para la ejecución de pruebas unitarias.
 2. **Moq (opcional)**: Si se quisiera simular interacciones más complejas, se podría usar Moq para crear mocks de las interfaces.
+3. **AutoMapper**: mapeo de objetos entre las diferentes capas
 
 ## Tiempo de Desarrollo
 
