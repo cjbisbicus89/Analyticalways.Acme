@@ -8,7 +8,7 @@ Este proyecto es una solución sencilla para gestionar estudiantes, cursos y pag
 - Permitir que un estudiante se inscriba en un curso luego de realizar el pago de la cuota.
 - Consultar los cursos y estudiantes inscritos dentro de un rango de fechas.
 
-La implementación está basada en C# con un enfoque de buenas prácticas y una arquitectura flexible, que permite futuras expansiones sin requerir una reescritura completa del código.
+La implementación está basada en C# con Net Core 8.0 con un enfoque de buenas prácticas y una arquitectura flexible, que permite futuras expansiones sin requerir una reescritura completa del código.
 
 ## Decisiones Tomadas
 
