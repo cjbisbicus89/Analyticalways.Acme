@@ -10,7 +10,7 @@
     <ProjectReference Include="..\Analyticalways.Acme.Domain.Entity\Analyticalways.Acme.Domain.Entity.csproj" />
     <ProjectReference Include="..\Analyticalways.Acme.Domain.Interface\Analyticalways.Acme.Domain.Interface.csproj" />
     <ProjectReference Include="..\Analyticalways.Acme.Infraestructure.Interface\Analyticalways.Acme.Infraestructure.Interface.csproj" />
-    <ProjectReference Include="..\Analyticalways.Acme.Tranversal.Interfaces\Analyticalways.Acme.Tranversal.Interfaces.csproj" />
+    <ProjectReference Include="..\Analyticalways.Acme.Tranversal.Interfaces\Analyticalways.Acme.Transversal.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

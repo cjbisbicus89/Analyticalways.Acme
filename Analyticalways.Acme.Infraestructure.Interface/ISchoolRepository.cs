@@ -6,7 +6,7 @@ namespace Analyticalways.Acme.Infraestructure.Interface
     {       
         #region asynchronous methods
         Task<bool> RegisterStudentAsync(Student student);
-        Task<bool> RegisterCourseAsync(Course course);
+        Task<bool> CreateCourseAsync(Course course);
         Task<bool> EnrollStudentInCourseAsync(Student student, Course course);
         Task<List<Course>> GetAllCoursesAsync();
         #endregion

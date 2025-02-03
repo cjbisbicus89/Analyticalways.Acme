@@ -2,7 +2,7 @@
 
 namespace Analyticalways.Acme.Tranversal.Common
 {
-    public interface IConnetionFactory
+    public interface IConnectionFactory
     {
         IDbConnection GetConnection { get; }
     }

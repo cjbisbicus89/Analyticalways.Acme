@@ -7,8 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Analyticalways.Acme.Aplication.DTO\Analyticalways.Acme.Aplication.DTO.csproj" />
+    <ProjectReference Include="..\Analyticalways.Acme.Aplication.Interface\Analyticalways.Acme.Aplication.Interface.csproj" />
     <ProjectReference Include="..\Analyticalways.Acme.Domain.Entity\Analyticalways.Acme.Domain.Entity.csproj" />
-    <ProjectReference Include="..\Analyticalways.Acme.Infraestructure.Interface\Analyticalways.Acme.Infraestructure.Interface.csproj" />
+    <ProjectReference Include="..\Analyticalways.Acme.Domain.Interface\Analyticalways.Acme.Domain.Interface.csproj" />
     <ProjectReference Include="..\Analyticalways.Acme.Tranversal.Common\Analyticalways.Acme.Transversal.Common.csproj" />
   </ItemGroup>
 

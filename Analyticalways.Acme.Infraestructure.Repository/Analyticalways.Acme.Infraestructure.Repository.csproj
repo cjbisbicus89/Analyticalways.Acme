@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Analyticalways.Acme.Infraestructure.Data\Analyticalways.Acme.Infraestructure.Data.csproj" />
     <ProjectReference Include="..\Analyticalways.Acme.Infraestructure.Interface\Analyticalways.Acme.Infraestructure.Interface.csproj" />
-    <ProjectReference Include="..\Analyticalways.Acme.Tranversal.Common\Analyticalways.Acme.Tranversal.Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,177 +4,160 @@ using Analyticalways.Acme.Infraestructure.Interface;
 using Analyticalways.Acme.Tranversal.Common;
 using Analyticalways.Acme.Tranversal.Interfaces;
 
-
-namespace Analyticalways.Acme.Domain.Core
+public class SchoolDomain : ISchoolDomain
 {
-    public class SchoolDomain:ISchoolDomain
+    private readonly ISchoolRepository _schoolRepository;
+    private readonly IPaymentGateway _paymentGateway;
+
+    #region Builder
+    public SchoolDomain(ISchoolRepository schoolRepository, IPaymentGateway paymentGateway)
     {
-        private readonly ISchoolRepository _repository;
-        private readonly IPaymentGateway _paymentGateway;
+        _schoolRepository = schoolRepository;
+        _paymentGateway = paymentGateway;
+    }
+    #endregion
 
-        #region Builder
-        public SchoolDomain(ISchoolRepository repository, IPaymentGateway paymentGateway)
+    #region Asynchronous Methods
+
+    public async Task<Response<dynamic>> RegisterStudentAsync(Student student)
+    {
+        if (student.Age < 18)
         {
-            _repository = repository;
-            _paymentGateway = paymentGateway;
-        }
-        #endregion
-
-       
-        #region asynchronous methods
-
-        public async Task<Response<dynamic>> RegisterStudentAsync(Student student)
-        {
-            if (student.Age < 18)  
-            {
-                return new Response<dynamic>
-                {
-                    success = false,
-                    error = true,
-                    message = Messages.Msg001
-                };
-            }
-
-            bool result = await _repository.RegisterStudentAsync(student);
-                        
             return new Response<dynamic>
             {
-                success = result, // If the result is true, success will be true
-                error = !result,  // If the result is false, then there is an error
-                message = result ? Messages.Msg002 : Messages.Msg003 // I changed the error message if the operation fails
+                Success = false,
+                Error = true,
+                Message = Messages.MessageAgeValidation
             };
-
         }
-        public async Task<Response<dynamic>> RegisterCourseAsync(Course course)
+
+        bool isStudentRegistered = await _schoolRepository.RegisterStudentAsync(student);
+
+        return new Response<dynamic>
         {
-            // Validations with error messages
-            var validationResponse = ValidateCourseInputs(course);
-            if (!validationResponse.success)
-            {
-                return validationResponse;
-            }
+            Success = isStudentRegistered,
+            Error = !isStudentRegistered,
+            Message = isStudentRegistered ? Messages.MessageProcessNotCompleted : Messages.MessageProcessCompletedSuccessfully
+        };
+    }
 
-            bool? result = await _repository.RegisterCourseAsync(course);
-
-            // Handling result from the repository
-            if (result == null || !result.Value)
-            {
-                return CreateResponse(false, Messages.Msg002);
-            }
-
-            // If all validations are correct, we return a success response.
-            return CreateResponse(true, Messages.Msg003);
-
+    public async Task<Response<dynamic>> CreateCourseAsync(Course course)
+    {
+        var validationResponse = ValidateCourseRegistration(course);
+        if (!validationResponse.Success)
+        {
+            return validationResponse;
         }
-        public async Task<Response<dynamic>> EnrollStudentInCourseAsync(Student student, Course course)
+
+        bool? isCourseCreated = await _schoolRepository.CreateCourseAsync(course);
+
+        if (isCourseCreated == null || !isCourseCreated.Value)
         {
-            // We process the payment first
-            var payment = await _paymentGateway.ProcessPayment(course.RegistrationFee);
-
-            if (!payment.success)
-            {
-                // If the payment fails, we return the corresponding error
-                return CreateResponse(false, Messages.Msg007); // Payment failure message
-            }
-
-            // If the payment is successful, we process the enrollment
-            bool? result = await _repository.EnrollStudentInCourseAsync(student, course);
-
-            if (result == null || !result.Value)
-            {
-                // If the enrollment fails, we return the error message
-                return CreateResponse(false, Messages.Msg002);
-            }
-
-            // If everything is successful, we return the success message
-            return CreateResponse(true, Messages.Msg003);
-
+            return CreateFailureResponse(Messages.MessageProcessNotCompleted);
         }
-        public async Task<Response<List<Course>>> GetCoursesWithinDateRangeAsync(DateTime startDate, DateTime endDate)
+
+        return CreateSuccessResponse(Messages.MessageProcessCompletedSuccessfully);
+    }
+
+    public async Task<Response<dynamic>> EnrollStudentToCourseAsync(Student student, Course course)
+    {
+        var paymentResponse = await _paymentGateway.ProcessPayment(course.RegistrationFee);
+
+        if (!paymentResponse.Success)
         {
-            // Validate the date range
-            if (startDate >= endDate)
-            {
-                return new Response<List<Course>>
-                {
-                    success = false,
-                    error = true,
-                    message = Messages.Msg006
-                };
-            }
+            return CreateFailureResponse(Messages.MessageConnectionPaymentGatewayFailed);
+        }
 
-            // Get all courses from the repository
-            var allCourses = await _repository.GetAllCoursesAsync();
+        bool? isStudentEnrolled = await _schoolRepository.EnrollStudentInCourseAsync(student, course);
 
-            // Filter courses that are within the date range
-            var filteredCourses = allCourses
-                .Where(course => course.StartDate >= startDate && course.EndDate <= endDate)
-                .ToList();
+        if (isStudentEnrolled == null || !isStudentEnrolled.Value)
+        {
+            return CreateFailureResponse(Messages.MessageProcessNotCompleted);
+        }
 
-            // If there are no courses in the date range, return an empty response
-            if (filteredCourses.Count == 0)
-            {
-                return new Response<List<Course>>
-                {
-                    success = false,
-                    error = true,
-                    message = Messages.Msg008
-                };
-            }
+        return CreateSuccessResponse(Messages.MessageProcessCompletedSuccessfully);
+    }
 
-            // Return the courses that meet the date range
+    public async Task<Response<List<Course>>> GetCoursesWithinDateRangeAsync(DateTime startDate, DateTime endDate)
+    {
+        if (startDate >= endDate)
+        {
             return new Response<List<Course>>
             {
-                success = true,
-                error = false,
-                result = filteredCourses,
-                message = "OK"
+                Success = false,
+                Error = true,
+                Message = Messages.MessageValidationOfDates
             };
         }
 
-        #endregion
+        var allCourses = await _schoolRepository.GetAllCoursesAsync();
+        var filteredCourses = allCourses
+            .Where(course => course.StartDate >= startDate && course.EndDate <= endDate)
+            .ToList();
 
-
-        #region private methods
-        private Response<dynamic> ValidateCourseInputs(Course course)
+        if (filteredCourses.Count == 0)
         {
-            // Course name validation
-            if (string.IsNullOrWhiteSpace(course.Name))
+            return new Response<List<Course>>
             {
-                return CreateErrorResponse(Messages.Msg004);
-            }
-            // Enrollment fee validation
-            if (course.RegistrationFee <= 0)
-            {
-                return CreateErrorResponse(Messages.Msg005);
-            }
-            // Date validation
-            if (course.EndDate <= course.StartDate)
-            {
-                return CreateErrorResponse(Messages.Msg006);
-            }
-            // If all validations are correct, we return a success response.
-            return new Response<dynamic> { success = true, error = false };
-        }
-        private Response<dynamic> CreateErrorResponse(string message)
-        {
-            return new Response<dynamic>
-            {
-                success = false,
-                error=false,
-                message = message
+                Success = false,
+                Error = true,
+                Message = Messages.MessageCoursesNotFoundInTheDateRange
             };
         }
-        private Response<dynamic> CreateResponse(bool success, string message)
-        {
-            return new Response<dynamic>
-            {
-                success = success,
-                error = !success,
-                message = message
-            };
-        }
-        #endregion
 
+        return new Response<List<Course>>
+        {
+            Success = true,
+            Error = false,
+            Result = filteredCourses,
+            Message = Messages.MessageProcessCompletedSuccessfully
+        };
     }
+
+    #endregion
+
+    #region Métodos Privados
+
+    private Response<dynamic> ValidateCourseRegistration(Course course)
+    {
+        
+        if (string.IsNullOrWhiteSpace(course.Name))
+        {
+            return CreateFailureResponse(Messages.MessageValidationNullOrEmptyField);
+        }
+       
+        if (course.RegistrationFee <= 0)
+        {
+            return CreateFailureResponse(Messages.MessageRegistrationFee);
+        }
+      
+        if (course.EndDate <= course.StartDate)
+        {
+            return CreateFailureResponse(Messages.MessageValidationOfDates);
+        }
+
+        return new Response<dynamic> { Success = true, Error = false };
+    }
+
+    private Response<dynamic> CreateFailureResponse(string message)
+    {
+        return new Response<dynamic>
+        {
+            Success = false,
+            Error = true,
+            Message = message
+        };
+    }
+
+    private Response<dynamic> CreateSuccessResponse(string message)
+    {
+        return new Response<dynamic>
+        {
+            Success = true,
+            Error = false,
+            Message = message
+        };
+    }
+
+    #endregion
 }

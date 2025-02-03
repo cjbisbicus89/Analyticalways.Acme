@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Analyticalways.Acme.Infraestructure.Data
 {
-    public class ConnectionFactory: IConnetionFactory
+    public class ConnectionFactory: IConnectionFactory
     {
         private readonly IConfiguration _configuration;
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Analyticalways.Acme.Tranversal.Interfaces;
+﻿using Analyticalways.Acme.Tranversal.Interfaces;
 
 namespace Analyticalways.Acme.Tranversal.Common
 {
@@ -20,19 +15,19 @@ namespace Analyticalways.Acme.Tranversal.Common
         {
             var response = new Response<dynamic>
             {
-                error = false,  // Assuming error is false by default
-                result = null    // Assuming result is null by default when amount is valid
+                Error = false,  // Assuming error is false by default
+                Result = null    // Assuming result is null by default when amount is valid
             };
 
             if (amount < 0)
             {
-                response.success = false;
-                response.message = Messages.Msg007; // Set error message if amount is invalid
+                response.Success = false;
+                response.Message = Messages.MessageConnectionPaymentGatewayFailed; // Set error message if amount is invalid
             }
             else
             {
-                response.success = true;
-                response.message = Messages.Msg003;
+                response.Success = true;
+                response.Message = Messages.MessageProcessCompletedSuccessfully;
             }
 
             return response;

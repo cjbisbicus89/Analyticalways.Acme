@@ -8,12 +8,12 @@ namespace Analyticalways.Acme.Tranversal.Common
 {
     public class Response<T>
     {
-        public bool success { get; set; }
+        public bool Success { get; set; }
 
-        public bool error { get; set; }
+        public bool Error { get; set; }
 
-        public string message { get; set; }
+        public string Message { get; set; }
 
-        public dynamic result { get; set; }
+        public dynamic Result { get; set; }
     }
 }

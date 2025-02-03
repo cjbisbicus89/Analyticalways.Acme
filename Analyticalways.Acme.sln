@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyticalways.Acme.Tranversal.Common", "Analyticalways.Acme.Tranversal.Common\Analyticalways.Acme.Tranversal.Common.csproj", "{0CBEE4D2-4B80-4D02-A465-74DD9B7432E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyticalways.Acme.Transversal.Common", "Analyticalways.Acme.Tranversal.Common\Analyticalways.Acme.Transversal.Common.csproj", "{0CBEE4D2-4B80-4D02-A465-74DD9B7432E4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Trasnversal", "Trasnversal", "{CF27BD3A-A0AE-4794-8951-6447D9F2DA6E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transversal", "Transversal", "{CF27BD3A-A0AE-4794-8951-6447D9F2DA6E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{25F64F38-8AAA-4277-AF63-36C2D9C82720}"
 EndProject
@@ -23,15 +23,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyticalways.Acme.Domain.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyticalways.Acme.Infraestructure.Repository", "Analyticalways.Acme.Infraestructure.Repository\Analyticalways.Acme.Infraestructure.Repository.csproj", "{EAB282F8-5F7C-45FA-A3BB-8F2F653CD6CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyticalways.Acme.Domain.Interface", "Analyticalways.Acme.Domain.Interface\Analyticalways.Acme.Domain.Interface.csproj", "{2E9E752D-5C96-436B-A409-57124779DF07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyticalways.Acme.Domain.Interface", "Analyticalways.Acme.Domain.Interface\Analyticalways.Acme.Domain.Interface.csproj", "{2E9E752D-5C96-436B-A409-57124779DF07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyticalways.Acme.Domain.Core", "Analyticalways.Acme.Domain.Core\Analyticalways.Acme.Domain.Core.csproj", "{3F533F11-5A7C-4177-957C-642A3A72FF76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyticalways.Acme.Domain.Core", "Analyticalways.Acme.Domain.Core\Analyticalways.Acme.Domain.Core.csproj", "{3F533F11-5A7C-4177-957C-642A3A72FF76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyticalways.Acme.Tranversal.Interfaces", "Analyticalways.Acme.Tranversal.Interfaces\Analyticalways.Acme.Tranversal.Interfaces.csproj", "{EABB8F9A-BA92-43A4-B86D-05F7561238E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyticalways.Acme.Transversal.Interfaces", "Analyticalways.Acme.Tranversal.Interfaces\Analyticalways.Acme.Transversal.Interfaces.csproj", "{EABB8F9A-BA92-43A4-B86D-05F7561238E3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{6D41B3C9-D455-43BA-8A33-0E650CD5339D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyticalways.Acme.Test.xUnit", "Analyticalways.Acme.Test.xUnit\Analyticalways.Acme.Test.xUnit.csproj", "{8B6D65E4-CCEC-4A09-8DA3-67D148B5A605}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyticalways.Acme.Test.xUnit", "Analyticalways.Acme.Test.xUnit\Analyticalways.Acme.Test.xUnit.csproj", "{8B6D65E4-CCEC-4A09-8DA3-67D148B5A605}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyticalways.Acme.Aplication.DTO", "Analyticalways.Acme.Aplication.DTO\Analyticalways.Acme.Aplication.DTO.csproj", "{CFB2C3C7-606D-47C6-BBC4-193A3524EC75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyticalways.Acme.Transversal.Mapper", "Analyticalways.Acme.Transversal.Mapper\Analyticalways.Acme.Transversal.Mapper.csproj", "{B7C59452-A17A-4907-895C-D322F81D5F7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyticalways.Acme.Aplication.Interface", "Analyticalways.Acme.Aplication.Interface\Analyticalways.Acme.Aplication.Interface.csproj", "{EEF68BBD-6BAE-408C-A271-319A411382D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyticalways.Acme.Aplication.Implementation", "Analyticalways.Acme.Aplication.Implementation\Analyticalways.Acme.Aplication.Implementation.csproj", "{3FA5FEB4-E2C7-4FD3-BC33-3157CB23552B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +83,22 @@ Global
 		{8B6D65E4-CCEC-4A09-8DA3-67D148B5A605}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B6D65E4-CCEC-4A09-8DA3-67D148B5A605}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B6D65E4-CCEC-4A09-8DA3-67D148B5A605}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFB2C3C7-606D-47C6-BBC4-193A3524EC75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFB2C3C7-606D-47C6-BBC4-193A3524EC75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFB2C3C7-606D-47C6-BBC4-193A3524EC75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFB2C3C7-606D-47C6-BBC4-193A3524EC75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7C59452-A17A-4907-895C-D322F81D5F7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7C59452-A17A-4907-895C-D322F81D5F7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7C59452-A17A-4907-895C-D322F81D5F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7C59452-A17A-4907-895C-D322F81D5F7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEF68BBD-6BAE-408C-A271-319A411382D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEF68BBD-6BAE-408C-A271-319A411382D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEF68BBD-6BAE-408C-A271-319A411382D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEF68BBD-6BAE-408C-A271-319A411382D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FA5FEB4-E2C7-4FD3-BC33-3157CB23552B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FA5FEB4-E2C7-4FD3-BC33-3157CB23552B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FA5FEB4-E2C7-4FD3-BC33-3157CB23552B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FA5FEB4-E2C7-4FD3-BC33-3157CB23552B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +113,10 @@ Global
 		{3F533F11-5A7C-4177-957C-642A3A72FF76} = {6F61CF19-174B-48F2-81E0-E18D10D1E1F1}
 		{EABB8F9A-BA92-43A4-B86D-05F7561238E3} = {CF27BD3A-A0AE-4794-8951-6447D9F2DA6E}
 		{8B6D65E4-CCEC-4A09-8DA3-67D148B5A605} = {6D41B3C9-D455-43BA-8A33-0E650CD5339D}
+		{CFB2C3C7-606D-47C6-BBC4-193A3524EC75} = {604E8171-2C99-420C-B00B-C2913F689A54}
+		{B7C59452-A17A-4907-895C-D322F81D5F7A} = {CF27BD3A-A0AE-4794-8951-6447D9F2DA6E}
+		{EEF68BBD-6BAE-408C-A271-319A411382D8} = {604E8171-2C99-420C-B00B-C2913F689A54}
+		{3FA5FEB4-E2C7-4FD3-BC33-3157CB23552B} = {604E8171-2C99-420C-B00B-C2913F689A54}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C2188A60-4D9A-4A57-93EC-8980469B1ABA}

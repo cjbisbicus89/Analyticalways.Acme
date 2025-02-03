@@ -1,231 +1,295 @@
-using Analyticalways.Acme.Domain.Core;
+using Analyticalways.Acme.Aplication.DTO;
+using Analyticalways.Acme.Aplication.Implementation;
 using Analyticalways.Acme.Domain.Entity;
-using Analyticalways.Acme.Infraestructure.Interface;
+using Analyticalways.Acme.Domain.Interface;
 using Analyticalways.Acme.Tranversal.Common;
-using Analyticalways.Acme.Tranversal.Interfaces;
+using AutoMapper;
 using Moq;
 
-namespace Analyticalways.Acme.Domain.Tests
+namespace Analyticalways.Acme.Tests
 {
-    public class SchoolDomainTests
+    public class SchoolAplicationTests
     {
-        private readonly Mock<ISchoolRepository> _mockRepository;
-        private readonly Mock<IPaymentGateway> _mockPaymentGateway;
-        private readonly SchoolDomain _schoolDomain;
+        private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<ISchoolDomain> _mockSchoolDomain;
+        private readonly SchoolAplication _schoolAplication;
 
-        public SchoolDomainTests()
+        public SchoolAplicationTests()
         {
-            // Mock dependencies
-            _mockRepository = new Mock<ISchoolRepository>();
-            _mockPaymentGateway = new Mock<IPaymentGateway>();
-
-            // Instantiate the class we are testing
-            _schoolDomain = new SchoolDomain(_mockRepository.Object, _mockPaymentGateway.Object);
+            
+            _mockMapper = new Mock<IMapper>();
+            _mockSchoolDomain = new Mock<ISchoolDomain>();
+            
+            _schoolAplication = new SchoolAplication(_mockMapper.Object, _mockSchoolDomain.Object);
         }
 
         #region RegisterStudentAsync Tests
-
         [Fact]
-        public async Task RegisterStudentAsync_ShouldReturnError_WhenStudentIsUnderage()
+        public async Task RegisterStudentAsync_ShouldReturnSuccess_WhenStudentIsRegistered()
         {
             // Arrange
-            var student = new Student { Name = "cristian bisbicus", Age = 17 }; //Underage
-
-            // Act
-            var result = await _schoolDomain.RegisterStudentAsync(student);
-
-            // Assert
-            Assert.False(result.success);
-            Assert.Equal(Messages.Msg001, result.message); // Student must be 18 years or older to register
-        }
-
-        [Fact]
-        public async Task RegisterStudentAsync_ShouldReturnSuccess_WhenStudentIs18()
-        {
-            // Arrange
-            var student = new Student { Name = "cristian urbano", Age = 18 }; // Student must be 18 years old or older to register
-
-            // We simulate that the registration was successful in the repository
-            _mockRepository.Setup(repo => repo.RegisterStudentAsync(It.IsAny<Student>())).ReturnsAsync(true);
-
-            // Act
-            var result = await _schoolDomain.RegisterStudentAsync(student);
-
-            // Assert
-            Assert.True(result.success);
-            Assert.Equal(Messages.Msg002, result.message); // Success message
-        }
-
-        [Fact]
-        public async Task RegisterStudentAsync_ShouldReturnSuccess_WhenStudentIsOver18()
-        {
-            // Arrange
-            var student = new Student { Name = "jesus bisbicus", Age = 25 }; // Adult
-
-            // We simulate that the registration was successful in the repository
-            _mockRepository.Setup(repo => repo.RegisterStudentAsync(It.IsAny<Student>())).ReturnsAsync(true);
-
-            // Act
-            var result = await _schoolDomain.RegisterStudentAsync(student);
-
-            // Assert
-            Assert.True(result.success);
-            Assert.Equal(Messages.Msg002, result.message); // Success message
-        }
-
-        #endregion
-
-        #region RegisterCourseAsync Tests
-
-        [Fact]
-        public async Task RegisterCourseAsync_ShouldReturnError_WhenCourseNameIsEmpty()
-        {
-            // Arrange
-            var course = new Course { Name = "", RegistrationFee = 100, StartDate = DateTime.Now.AddDays(1), EndDate = DateTime.Now.AddDays(10) };
-
-            // Act
-            var result = await _schoolDomain.RegisterCourseAsync(course);
-
-            // Assert
-            Assert.False(result.success);
-            Assert.Equal(Messages.Msg004, result.message); // Error message if course name is empty
-        }
-
-        [Fact]
-        public async Task RegisterCourseAsync_ShouldReturnError_WhenRegistrationFeeIsNegative()
-        {
-            // Arrange
-            var course = new Course { Name = "Math 101", RegistrationFee = -100, StartDate = DateTime.Now.AddDays(1), EndDate = DateTime.Now.AddDays(10) };
-
-            // Act
-            var result = await _schoolDomain.RegisterCourseAsync(course);
-
-            // Assert
-            Assert.False(result.success);
-            Assert.Equal(Messages.Msg005, result.message); // Error message if registration fee is negative
-        }
-
-        [Fact]
-        public async Task RegisterCourseAsync_ShouldReturnError_WhenEndDateBeforeStartDate()
-        {
-            // Arrange
-            var course = new Course { Name = "Math 101", RegistrationFee = 100, StartDate = DateTime.Now.AddDays(5), EndDate = DateTime.Now.AddDays(1) };
-
-            // Act
-            var result = await _schoolDomain.RegisterCourseAsync(course);
-
-            // Assert
-            Assert.False(result.success);
-            Assert.Equal(Messages.Msg006, result.message); // Error message if end date is before start date
-        }
-
-        [Fact]
-        public async Task RegisterCourseAsync_ShouldReturnSuccess_WhenCourseIsValid()
-        {
-            // Arrange
-            var course = new Course { Name = "Math 101", RegistrationFee = 100, StartDate = DateTime.Now.AddDays(1), EndDate = DateTime.Now.AddDays(10) };
-
-            // We simulate that the course was successfully registered in the repository
-            _mockRepository.Setup(repo => repo.RegisterCourseAsync(It.IsAny<Course>())).ReturnsAsync(true);
-
-            // Act
-            var result = await _schoolDomain.RegisterCourseAsync(course);
-
-            // Assert
-            Assert.True(result.success);
-            Assert.Equal(Messages.Msg003, result.message); // Success message
-        }
-
-        #endregion
-
-        #region EnrollStudentInCourseAsync Tests
-
-        [Fact]
-        public async Task EnrollStudentInCourseAsync_ShouldReturnError_WhenPaymentFails()
-        {
-            // Arrange
-            var student = new Student { Name = "cristian bisbicus", Age = 25 };
-            var course = new Course
+            var studentDto = new StudentDto { Name = "Cristian Bisbicus", Age = 20 };
+            var studentEntity = new Student { Name = "Cristian Bisbicus", Age = 20 };
+            var registerResult = new Response<dynamic>
             {
-                Name = "Math 101",
-                RegistrationFee = 100,
-                StartDate = DateTime.Now.AddDays(1),
-                EndDate = DateTime.Now.AddDays(10)
+                Success = true,
+                Result = studentEntity
             };
 
-            // Simulate that the payment fails
-            _mockPaymentGateway.Setup(pg => pg.ProcessPayment(It.IsAny<decimal>()))
-                .ReturnsAsync(new Response<dynamic> { success = false, message = Messages.Msg007 });
+            // Mocking
+            _mockMapper.Setup(m => m.Map<Student>(It.IsAny<StudentDto>())).Returns(studentEntity);
+            _mockSchoolDomain.Setup(s => s.RegisterStudentAsync(It.IsAny<Student>())).ReturnsAsync(registerResult);
 
             // Act
-            var result = await _schoolDomain.EnrollStudentInCourseAsync(student, course);
+            var response = await _schoolAplication.RegisterStudentAsync(studentDto);
 
             // Assert
-            Assert.False(result.success);  // Verify that the operation has failed
-            Assert.Equal(Messages.Msg007, result.message); // Verify that the error message is as expected
-
+            Assert.True(response.Success);
+            Assert.Null(response.Message);
+            Assert.Equal(studentEntity, response.Result);
         }
 
+        [Fact]
+        public async Task RegisterStudentAsync_ShouldReturnFailure_WhenExceptionOccurs()
+        {
+            // Arrange
+            var studentDto = new StudentDto { Name = "Cristian Bisbicus", Age = 20 };
+
+            // Mock exception
+            _mockSchoolDomain.Setup(s => s.RegisterStudentAsync(It.IsAny<Student>())).ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            var response = await _schoolAplication.RegisterStudentAsync(studentDto);
+
+            // Assert
+            Assert.False(response.Success);
+            Assert.Equal("Test exception", response.Message);
+        }
+        [Fact]
+        public async Task RegisterStudentAsync_ShouldReturnFailure_WhenInvalidDataProvided()
+        {
+            // Arrange
+            var studentDto = new StudentDto { Name = "", Age = 20 }; 
+            var studentEntity = new Student { Name = "", Age = 20 };  
+
+            // Mocking
+            _mockMapper.Setup(m => m.Map<Student>(It.IsAny<StudentDto>())).Returns(studentEntity);
+            _mockSchoolDomain.Setup(s => s.RegisterStudentAsync(It.IsAny<Student>())).ReturnsAsync(new Response<dynamic> { Success = false, Message = "Invalid data" });
+
+            // Act
+            var response = await _schoolAplication.RegisterStudentAsync(studentDto);
+
+            // Assert
+            Assert.False(response.Success);
+            Assert.Equal("Invalid data", response.Message);
+        }
+        #endregion
+
+        #region CreateCourseAsync Tests
+        [Fact]
+        public async Task CreateCourseAsync_ShouldReturnSuccess_WhenCourseIsCreated()
+        {
+            // Arrange
+            var courseDto = new CourseDto { Name = "Programming cycle 1", RegistrationFee = 200m, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1) };
+            var courseEntity = new Course { Name = "Programming cycle 1", RegistrationFee = 200m, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1) };
+            var registerResult = new Response<dynamic>
+            {
+                Success = true,
+                Result = courseEntity
+            };
+
+            // Mocking
+            _mockMapper.Setup(m => m.Map<Course>(It.IsAny<CourseDto>())).Returns(courseEntity);
+            _mockSchoolDomain.Setup(s => s.CreateCourseAsync(It.IsAny<Course>())).ReturnsAsync(registerResult);
+
+            // Act
+            var response = await _schoolAplication.CreateCourseAsync(courseDto);
+
+            // Assert
+            Assert.True(response.Success);
+            Assert.Null(response.Message);
+            Assert.Equal(courseEntity, response.Result);
+        }
+
+        [Fact]
+        public async Task CreateCourseAsync_ShouldReturnFailure_WhenExceptionOccurs()
+        {
+            // Arrange
+            var courseDto = new CourseDto { Name = "Programming cycle 1", RegistrationFee = 200m, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1) };
+
+            // Mock exception
+            _mockSchoolDomain.Setup(s => s.CreateCourseAsync(It.IsAny<Course>())).ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            var response = await _schoolAplication.CreateCourseAsync(courseDto);
+
+            // Assert
+            Assert.False(response.Success);
+            Assert.Equal("Test exception", response.Message);
+        }
+        [Fact]
+        public async Task CreateCourseAsync_ShouldReturnFailure_WhenCourseAlreadyExists()
+        {
+            // Arrange
+            var courseDto = new CourseDto { Name = "Programming cycle 1", RegistrationFee = 200m, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1) };
+            var courseEntity = new Course { Name = "Programming cycle 1", RegistrationFee = 200m, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1) };
+                 
+            _mockMapper.Setup(m => m.Map<Course>(It.IsAny<CourseDto>())).Returns(courseEntity);
+            _mockSchoolDomain.Setup(s => s.CreateCourseAsync(It.IsAny<Course>())).ReturnsAsync(new Response<dynamic> { Success = false, Message = "Course already exists" });
+
+            // Act
+            var response = await _schoolAplication.CreateCourseAsync(courseDto);
+
+            // Assert
+            Assert.False(response.Success);
+            Assert.Equal("Course already exists", response.Message);
+        }
+        #endregion
+
+        #region EnrollStudentToCourseAsync Tests
+        [Fact]
+        public async Task EnrollStudentToCourseAsync_ShouldReturnSuccess_WhenEnrollmentIsSuccessful()
+        {
+            // Arrange
+            var studentDto = new StudentDto { Name = "Cristian Bisbicus", Age = 20 };
+            var courseDto = new CourseDto { Name = "Programming cycle 1", RegistrationFee = 200m, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1) };
+            var studentEntity = new Student { Name = "Cristian Bisbicus", Age = 20 };
+            var courseEntity = new Course { Name = "Programming cycle 1", RegistrationFee = 200m, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1) };
+            var registerResult = new Response<dynamic>
+            {
+                Success = true,
+                Result = Messages.MessageProcessCompletedSuccessfully
+            };
+
+            // Mocking
+            _mockMapper.Setup(m => m.Map<Student>(It.IsAny<StudentDto>())).Returns(studentEntity);
+            _mockMapper.Setup(m => m.Map<Course>(It.IsAny<CourseDto>())).Returns(courseEntity);
+            _mockSchoolDomain.Setup(s => s.EnrollStudentToCourseAsync(It.IsAny<Student>(), It.IsAny<Course>())).ReturnsAsync(registerResult);
+
+            // Act
+            var response = await _schoolAplication.EnrollStudentToCourseAsync(studentDto, courseDto);
+
+            // Assert
+            Assert.True(response.Success);
+            Assert.Null(response.Message);
+            Assert.Equal(Messages.MessageProcessCompletedSuccessfully, response.Result);
+        }
+
+        [Fact]
+        public async Task EnrollStudentToCourseAsync_ShouldReturnFailure_WhenExceptionOccurs()
+        {
+            // Arrange
+            var studentDto = new StudentDto { Name = "Cristian Bisbicus", Age = 20 };
+            var courseDto = new CourseDto { Name = "Programming cycle 1", RegistrationFee = 200m, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1) };
+
+            // Mock exception
+            _mockSchoolDomain.Setup(s => s.EnrollStudentToCourseAsync(It.IsAny<Student>(), It.IsAny<Course>())).ThrowsAsync(new Exception("Test exception"));
+
+            // Act
+            var response = await _schoolAplication.EnrollStudentToCourseAsync(studentDto, courseDto);
+
+            // Assert
+            Assert.False(response.Success);
+            Assert.Equal("Test exception", response.Message);
+        }
+        [Fact]
+        public async Task EnrollStudentToCourseAsync_ShouldReturnFailure_WhenStudentAlreadyEnrolled()
+        {
+            // Arrange
+            var studentDto = new StudentDto { Name = "Cristian Bisbicus", Age = 20 };
+            var courseDto = new CourseDto { Name = "Programming cycle 1", RegistrationFee = 200m, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1) };
+            var studentEntity = new Student { Name = "Cristian Bisbicus", Age = 20 };
+            var courseEntity = new Course { Name = "Programming cycle 1", RegistrationFee = 200m, StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(1) };
+
+            // Simulate domain returning failure if the student is already enrolled
+            _mockMapper.Setup(m => m.Map<Student>(It.IsAny<StudentDto>())).Returns(studentEntity);
+            _mockMapper.Setup(m => m.Map<Course>(It.IsAny<CourseDto>())).Returns(courseEntity);
+            _mockSchoolDomain.Setup(s => s.EnrollStudentToCourseAsync(It.IsAny<Student>(), It.IsAny<Course>())).ReturnsAsync(new Response<dynamic> { Success = false, Message = Messages.MessageProcessCompletedSuccessfully });
+
+            // Act
+            var response = await _schoolAplication.EnrollStudentToCourseAsync(studentDto, courseDto);
+
+            // Assert
+            Assert.False(response.Success);
+            Assert.Equal(Messages.MessageProcessCompletedSuccessfully, response.Message);
+        }
         #endregion
 
         #region GetCoursesWithinDateRangeAsync Tests
-
-        [Fact]
-        public async Task GetCoursesWithinDateRangeAsync_ShouldReturnError_WhenStartDateIsAfterEndDate()
+        [Fact]      
+        public async Task GetCoursesWithinDateRangeAsync_ShouldReturnCourses_WhenSuccess()
         {
             // Arrange
-            var startDate = DateTime.Now.AddDays(5);
-            var endDate = DateTime.Now.AddDays(1);
+                var startDate = DateTime.Now.AddDays(-10);
+                var endDate = DateTime.Now.AddDays(10);
+                
+                var courses = new List<Course>
+                {
+                    new Course
+                    {
+                            Name = "Programming cycle 1",
+                            RegistrationFee = 200,
+                            StartDate = startDate,
+                            EndDate = endDate
+                    }
+                };
 
-            // Act
-            var result = await _schoolDomain.GetCoursesWithinDateRangeAsync(startDate, endDate);
+               
+                var registerResult = new Response<List<Course>>
+                {
+                    Success = true,
+                    Result = courses
+                };
+                
+                var courseDtos = new List<CourseDto>
+                {
+                    new CourseDto
+                    {
+                        Name = "Programming cycle 1",
+                        RegistrationFee = 200,
+                        StartDate = startDate,
+                        EndDate = endDate
+                    }
+                };
 
-            // Assert
-            Assert.False(result.success);
-            Assert.Equal(Messages.Msg006, result.message); // Error message if start date is after end date
+                _mockSchoolDomain.Setup(s => s.GetCoursesWithinDateRangeAsync(startDate, endDate))
+                                    .ReturnsAsync(registerResult);
+
+                _mockMapper.Setup(m => m.Map<List<CourseDto>>(It.IsAny<List<Course>>()))
+                            .Returns(courseDtos);
+
+                // Act
+                var response = await _schoolAplication.GetCoursesWithinDateRangeAsync(startDate, endDate);
+
+                // Assert
+                Assert.True(response.Success); 
+                Assert.NotNull(response.Result); 
+                Assert.Equal(courseDtos.Count, response.Result.Count); 
+                Assert.Equal(courseDtos[0].Name, response.Result[0].Name); 
+                Assert.Equal(courseDtos[0].RegistrationFee, response.Result[0].RegistrationFee); 
+                Assert.Equal(courseDtos[0].StartDate, response.Result[0].StartDate); 
+                Assert.Equal(courseDtos[0].EndDate, response.Result[0].EndDate); 
         }
 
+
         [Fact]
-        public async Task GetCoursesWithinDateRangeAsync_ShouldReturnEmptyList_WhenNoCoursesInRange()
+        public async Task GetCoursesWithinDateRangeAsync_ShouldReturnFailure_WhenErrorOccurs()
         {
             // Arrange
-            var startDate = DateTime.Now.AddDays(5);
+            var startDate = DateTime.Now.AddDays(-10);
             var endDate = DateTime.Now.AddDays(10);
 
-            // We pretend that there are no courses in the repository
-            _mockRepository.Setup(repo => repo.GetAllCoursesAsync()).ReturnsAsync(new List<Course>());
+            // Mock exception
+            _mockSchoolDomain.Setup(s => s.GetCoursesWithinDateRangeAsync(startDate, endDate)).ThrowsAsync(new Exception("Test exception"));
 
             // Act
-            var result = await _schoolDomain.GetCoursesWithinDateRangeAsync(startDate, endDate);
+            var response = await _schoolAplication.GetCoursesWithinDateRangeAsync(startDate, endDate);
 
             // Assert
-            Assert.False(result.success);
-            Assert.Equal(Messages.Msg008, result.message); // Error message if there are no courses in the date range
+            Assert.False(response.Success);
+            Assert.Equal("Error: Test exception", response.Message);
         }
-
-        [Fact]
-        public async Task GetCoursesWithinDateRangeAsync_ShouldReturnCourses_WhenCoursesInRange()
-        {
-            // Arrange
-            var startDate = DateTime.Now.AddDays(1);
-            var endDate = DateTime.Now.AddDays(30);
-
-            var courses = new List<Course>
-            {
-                new Course { Name = "Math 101", RegistrationFee = 100, StartDate = DateTime.Now.AddDays(5), EndDate = DateTime.Now.AddDays(10) },
-                new Course { Name = "Science 101", RegistrationFee = 150, StartDate = DateTime.Now.AddDays(12), EndDate = DateTime.Now.AddDays(18) }
-            };
-
-            _mockRepository.Setup(repo => repo.GetAllCoursesAsync()).ReturnsAsync(courses);
-
-            // Act
-            var result = await _schoolDomain.GetCoursesWithinDateRangeAsync(startDate, endDate);
-
-            // Assert
-            Assert.True(result.success);
-            Assert.Equal(2, result.result.Count); // You must return two courses within the date range
-        }
-
+        
         #endregion
     }
 }
